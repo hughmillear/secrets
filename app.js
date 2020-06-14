@@ -8,10 +8,12 @@ const mongoose = require("mongoose");
 const app = express();
 
 app.use(express.static("public"));
-app.set('view engine', 'ejs');
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+app.set("view engine", "ejs");
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
 
 let port = process.env.PORT;
 if (port == null || port == "") {
@@ -51,21 +53,18 @@ const userSchema = {
 
 const User = new mongoose.model("User", userSchema);
 
-
-app.get("/", function(req, res) {
-    res.render("home");
+app.get("/", function (req, res) {
+  res.render("home");
 });
 
-app.get("/login", function(req, res) {
-    res.render("login");
+app.get("/login", function (req, res) {
+  res.render("login");
 });
 
-app.get("/register", function(req, res) {
-    res.render("register");
+app.get("/register", function (req, res) {
+  res.render("register");
 });
-
-
 
 app.listen(port, function () {
-    console.log(`Server started at: http://localhost:${port}`);
-  });
+  console.log(`Server started at: http://localhost:${port}`);
+});
