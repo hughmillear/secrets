@@ -5,4 +5,8 @@
 - Email
 - Password
 
+Plaintext password in database.
 
+## Level 2
+
+- Encryption - use encryption on password field in the database.

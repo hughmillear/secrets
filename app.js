@@ -1,9 +1,14 @@
 //jshint esversion:6
 
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs"); // eslint-disable-line
 const mongoose = require("mongoose");
+const encrypt = require("mongoose-encryption");
 
 const app = express();
 
@@ -40,7 +45,7 @@ if (node_env === "production") {
   });
 }
 
-const userSchema = {
+const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
@@ -49,7 +54,10 @@ const userSchema = {
     type: String,
     required: true,
   },
-};
+});
+
+const secret = process.env.SECRET_STRING;
+userSchema.plugin(encrypt, { secret: secret, encryptedFields: ["password"] });
 
 const User = new mongoose.model("User", userSchema);
 
