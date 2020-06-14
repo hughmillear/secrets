@@ -1,0 +1,8 @@
+/node_modules
+*.code-workspace
+npm-debug.log
+.DS_Store
+/*.env
+node_modules
+.vscode
+.eslintrc.js

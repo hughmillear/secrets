@@ -6,8 +6,8 @@ const ejs = require("ejs"); // eslint-disable-line
 
 const app = express();
 
-app.use(expre.static("public"));
-app.set('view engine'. 'ejs');
+app.use(express.static("public"));
+app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -22,6 +22,17 @@ if (port == null || port == "") {
 }
 
 
+app.get("/", function(req, res) {
+    res.render("home");
+});
+
+app.get("/login", function(req, res) {
+    res.render("login");
+});
+
+app.get("/register", function(req, res) {
+    res.render("register");
+});
 
 
 
