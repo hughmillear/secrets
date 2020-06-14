@@ -81,6 +81,24 @@ app.post("/register", function (req, res) {
   });
 });
 
+app.post("/login", function (req, res) {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  User.findOne({ email: username }, function (err, foundUser) {
+    if (err) {
+      console.log(err);
+      res.sendStatus(500);
+    } else {
+      if (foundUser) {
+        if (foundUser.password === password) {
+          res.render("secrets");
+        }
+      }
+    }
+  });
+});
+
 app.listen(port, function () {
   console.log(`Server started at: http://localhost:${port}`);
 });
