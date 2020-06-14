@@ -38,6 +38,19 @@ if (node_env === "production") {
   });
 }
 
+const userSchema = {
+  email: {
+    type: String,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+};
+
+const User = new mongoose.model("User", userSchema);
+
 
 app.get("/", function(req, res) {
     res.render("home");
