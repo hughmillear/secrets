@@ -3,6 +3,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs"); // eslint-disable-line
+const mongoose = require("mongoose");
 
 const app = express();
 
@@ -19,6 +20,22 @@ if (port == null || port == "") {
   } else {
     port = 3000;
   }
+}
+
+let table_name = "userDB";
+
+let node_env = process.env.NODE_ENV || "development";
+console.log(`node_env = ${node_env}`);
+if (node_env === "production") {
+  mongoose.connect(
+    `mongodb+srv://${process.env.ATLAS_USER}:${process.env.ATLAS_PW}@${process.env.ATLAS_URI}/${table_name}`,
+    { useNewUrlParser: true, useUnifiedTopology: true }
+  );
+} else {
+  mongoose.connect(`mongodb://localhost:27017/${table_name}`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
 }
 
 
