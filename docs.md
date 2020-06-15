@@ -32,3 +32,7 @@ Plaintext password in database.
 - Not great documentation...
 - Remember that MongoDB doesn't care about the schema!
   - Hashes and salts are not part of the model, but are part of the document saved. Username and passowrd can't be required, as they aren't always filled on MongoDB document creation.
+
+## Level 6
+
+- Third Party OAuth 2.0
