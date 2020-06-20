@@ -28,11 +28,7 @@ app.use(
 
 let port = process.env.PORT;
 if (port == null || port == "") {
-  if (process.platform === "linux") {
-    port = 3001;
-  } else {
-    port = 3000;
-  }
+  port = 3000;
 }
 
 app.use(
