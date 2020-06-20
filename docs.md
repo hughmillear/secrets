@@ -36,3 +36,5 @@ Plaintext password in database.
 ## Level 6
 
 - Third Party OAuth 2.0
+  - Implement Google and Facebook OAuth
+  - To consistently match logins to users, need to change the userSchema to have an authId field, then each login Strategy should save the user ID to the authId field.

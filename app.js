@@ -14,6 +14,7 @@ const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const findOrCreate = require("mongoose-findorcreate");
+const FacebookStrategy = require("passport-facebook").Strategy;
 
 const app = express();
 
@@ -37,8 +38,8 @@ if (port == null || port == "") {
 app.use(
   session({
     secret: process.env.SECRET_STRING,
-    resave: false,
-    saveUninitialized: true,
+    resave: true,
+    saveUninitialized: false,
   })
 );
 app.use(passport.initialize());
@@ -64,7 +65,7 @@ mongoose.set("useCreateIndex", true);
 const userSchema = new mongoose.Schema({
   email: String,
   password: String,
-  googleId: String,
+  authId: String,
 });
 
 userSchema.plugin(passportLocalMongoose);
@@ -72,21 +73,51 @@ userSchema.plugin(findOrCreate);
 const User = new mongoose.model("User", userSchema);
 
 passport.use(User.createStrategy());
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.serializeUser(function (user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function (user, done) {
+  done(null, user);
+});
 
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/auth/google/secrets",
-      // userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
+      callbackURL: process.env.GOOGLE_CALLBACK_URL,
+      // userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo", // was needed in early 2019 around end of Gplus
     },
     function (accessToken, refreshToken, profile, cb) {
       console.log(profile);
       User.findOrCreate(
-        { googleId: profile.id, username: profile.displayName },
+        {
+          authId: profile.id,
+          username: profile.displayName,
+        },
+        function (err, user) {
+          return cb(err, user);
+        }
+      );
+    }
+  )
+);
+
+passport.use(
+  new FacebookStrategy(
+    {
+      clientID: process.env.FACEBOOK_APP_ID,
+      clientSecret: process.env.FACEBOOK_APP_SECRET,
+      callbackURL: process.env.FACEBOOK_CALLBACK_URL,
+    },
+    function (accessToken, refreshToken, profile, cb) {
+      console.log(profile);
+      User.findOrCreate(
+        {
+          authId: profile.id,
+          username: profile.displayName,
+        },
         function (err, user) {
           return cb(err, user);
         }
@@ -107,6 +138,16 @@ app.get(
 app.get(
   "/auth/google/secrets",
   passport.authenticate("google", { failureRedirect: "/login" }),
+  function (req, res) {
+    res.redirect("/secrets");
+  }
+);
+
+app.get("/auth/facebook", passport.authenticate("facebook"));
+
+app.get(
+  "/auth/facebook/secrets",
+  passport.authenticate("facebook", { failureRedirect: "/login" }),
   function (req, res) {
     res.redirect("/secrets");
   }
