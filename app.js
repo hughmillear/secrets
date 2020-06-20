@@ -87,7 +87,6 @@ passport.use(
       // userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo", // was needed in early 2019 around end of Gplus
     },
     function (accessToken, refreshToken, profile, cb) {
-      console.log(profile);
       User.findOrCreate(
         {
           authId: profile.id,
@@ -109,7 +108,6 @@ passport.use(
       callbackURL: process.env.FACEBOOK_CALLBACK_URL,
     },
     function (accessToken, refreshToken, profile, cb) {
-      console.log(profile);
       User.findOrCreate(
         {
           authId: profile.id,
@@ -181,7 +179,6 @@ app.get("/submit", function (req, res) {
 
 app.post("/submit", function (req, res) {
   const submittedSecret = req.body.secret;
-  console.log(req.user);
   User.findById(req.user._id, function (err, foundUser) {
     if (err) {
       console.log(err);
@@ -206,7 +203,7 @@ app.post("/register", function (req, res) {
       console.log(err);
       return res.redirect("/register");
     }
-    console.log(`user: ${user}`);
+    console.log(`Successful registration for user: ${user.username}`);
     passport.authenticate("local")(req, res, function () {
       res.redirect("/secrets");
     });
